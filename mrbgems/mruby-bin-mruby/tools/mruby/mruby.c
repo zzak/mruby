@@ -6,6 +6,7 @@
 #include "mruby/compile.h"
 #include "mruby/dump.h"
 #include "mruby/variable.h"
+#include "mruby/ext/mruby-argv.h"
 
 #ifndef ENABLE_STDIO
 static void
@@ -175,7 +176,6 @@ main(int argc, char **argv)
 {
   mrb_state *mrb = mrb_open();
   int n = -1;
-  int i;
   struct _args args;
   mrb_value ARGV;
   mrbc_context *c;
@@ -194,11 +194,8 @@ main(int argc, char **argv)
     return n;
   }
 
-  ARGV = mrb_ary_new_capa(mrb, args.argc);
-  for (i = 0; i < args.argc; i++) {
-    mrb_ary_push(mrb, ARGV, mrb_str_new_cstr(mrb, args.argv[i]));
-  }
-  mrb_define_global_const(mrb, "ARGV", ARGV);
+  ARGV = mrb_const_get(mrb, mrb_obj_value(mrb->object_class), mrb_intern_lit(mrb, "ARGV"));
+  mrb_parse_argv(mrb, args.argc, args.argv);
 
   c = mrbc_context_new(mrb);
   if (args.verbose)

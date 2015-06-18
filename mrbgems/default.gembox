@@ -1,4 +1,7 @@
 MRuby::GemBox.new do |conf|
+  # Adds ARGV constant and supporting methods
+  conf.gem :core => "mruby-argv"
+
   # Use standard Kernel#sprintf method
   conf.gem :core => "mruby-sprintf"
 
