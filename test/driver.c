@@ -17,6 +17,7 @@
 #include "mruby/string.h"
 #include "mruby/variable.h"
 #include "mruby/array.h"
+#include "mruby/ext/mruby-argv.h"
 
 void
 mrb_init_mrbtest(mrb_state *);
@@ -142,6 +143,7 @@ main(int argc, char **argv)
   mrb_state *mrb;
   int ret;
   mrb_bool verbose = FALSE;
+  mrb_value ARGV;
 
   print_hint();
 
@@ -151,6 +153,9 @@ main(int argc, char **argv)
     fprintf(stderr, "Invalid mrb_state, exiting test driver");
     return EXIT_FAILURE;
   }
+
+  ARGV = mrb_const_get(mrb, mrb_obj_value(mrb->object_class), mrb_intern_lit(mrb, "ARGV"));
+  mrb_parse_argv(mrb, argc, argv);
 
   if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'v') {
     printf("verbose mode: enable\n\n");
